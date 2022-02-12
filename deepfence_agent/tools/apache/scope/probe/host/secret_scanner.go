@@ -62,12 +62,14 @@ func (r *Reporter) startSecretsScan(req xfer.Request) xfer.Response {
 func getAndPublishSecretScanResults(client secret_scanner.SecretScannerClient, req secret_scanner.FindRequest, controlArgs map[string]string) {
 	res, err := client.FindSecretInfo(context.Background(), req)
 	timestamp := getTimestamp()
+	currTime := getCurrentTime()
 	for _, secret := range res.Secrets {
 		var secretScanDoc map[string]interface{}
 		secretScanDoc["node_id"] = controlArgs["node_id"]
 		secretScanDoc["scan_id"] = controlArgs["scan_id"]
 		secretScanDoc["scan_status"] = controlArgs["COMPLETE"]
 		secretScanDoc["time_stamp"] = timestamp
+		secretScanDoc["@timestamp"] = currTime
 		values := reflect.ValueOf(secret)
 		typeOfS := values.Type()
 		for index := 0; index < values.NumField(); index++ {
@@ -89,6 +91,7 @@ func getAndPublishSecretScanResults(client secret_scanner.SecretScannerClient, r
 		secretScanLogDoc["scan_id"] = controlArgs["scan_id"]
 		secretScanLogDoc["scan_status"] = controlArgs["COMPLETE"]
 		secretScanLogDoc["time_stamp"] = timestamp
+		secretScanLogDoc["@timestamp"] = currTime
 		byteJson, err := json.Marshal(secretScanLogDoc)
 		if err != nil {
 			fmt.Println("Error in marshalling secretScanLogDoc to json:" + err.Error())
@@ -104,6 +107,10 @@ func getAndPublishSecretScanResults(client secret_scanner.SecretScannerClient, r
 
 func getTimestamp() int64 {
 	return time.Now().UTC().UnixNano() / 1000000
+}
+
+func getCurrentTime() string {
+	return time.Now().UTC().Format("2006-01-02T15:04:05.000") + "Z"
 }
 
 func sendSecretScanDataToLogstash(secretScanMsg string, index string) error {
