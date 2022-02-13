@@ -41,8 +41,8 @@ COPY tools/apache/scope/docker/agent_check.sh /home/deepfence/
 COPY supervisord.conf /home/deepfence/supervisord-temp.conf
 COPY run_discovery.sh /home/deepfence/
 COPY create_cgroups.sh /home/deepfence/create-cgroups.sh
-COPY --chown=ubuntu:root --from=scanner-build /home/deepfence/usr/SecretScanner /usr/local/bin/SecretScanner
-COPY --chown=ubuntu:root --from=scanner-build /home/deepfence/usr/SecretScanner/config.yaml /usr/local/SecretScanner/config.yaml
+COPY --from=scanner-build /home/deepfence/usr/SecretScanner /usr/local/bin/SecretScanner
+COPY --from=scanner-build /home/deepfence/usr/SecretScanner/config.yaml /usr/local/SecretScanner/config.yaml
 
 RUN chmod 700 /usr/local/bin/fileUploader /usr/local/bin/agentAuth /usr/local/bin/getCloudInstanceId \
     && chmod 700 /usr/local/discovery/deepfence-discovery /home/deepfence/run_discovery.sh \
