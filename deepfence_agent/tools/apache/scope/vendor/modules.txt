@@ -178,7 +178,7 @@ github.com/gogo/status
 github.com/goji/httpauth
 # github.com/golang/groupcache v0.0.0-20171101203131-84a468cf14b4
 ## explicit
-# github.com/golang/protobuf v1.3.2
+# github.com/golang/protobuf v1.5.0
 ## explicit
 # google.golang.org/protobuf v1.27.1
 ## explicit
@@ -518,7 +518,7 @@ golang.org/x/text/unicode/norm
 # golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2
 ## explicit
 golang.org/x/time/rate
-# golang.org/x/tools v0.0.0-20190424220101-1e8e1cfdf96b
+# golang.org/x/tools v0.0.0-20190524140312-2c0ae7006135
 ## explicit
 golang.org/x/tools/cover
 golang.org/x/tools/go/ast/astutil
