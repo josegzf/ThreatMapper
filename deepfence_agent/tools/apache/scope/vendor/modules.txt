@@ -185,6 +185,7 @@ github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
+google.golang.org/protobuf v1.27.1
 # github.com/gomodule/redigo v1.8.5
 ## explicit
 github.com/gomodule/redigo
