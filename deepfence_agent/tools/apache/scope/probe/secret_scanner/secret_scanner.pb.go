@@ -7,8 +7,8 @@
 package secret_scanner
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "github.com/golang/protobuf/reflect/protoreflect"
+	protoimpl "github.com/golang/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 )
