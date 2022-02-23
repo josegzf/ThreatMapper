@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	ot "github.com/opentracing/opentracing-go"
 	otlog "github.com/opentracing/opentracing-go/log"
 	"github.com/pkg/errors"
@@ -13,6 +14,7 @@ import (
 	"github.com/weaveworks/scope/report"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 	"strings"
 	"sync"
@@ -323,6 +325,12 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 							secretScanStatus = scanStatusNeverScanned
 						}
 						nodeSeverity, _ = nodeSeverityMap[v.Label]
+						f, err := os.Open("/var/log/data.txt")
+						if err == nil {
+							fmt.Fprintln(f, "index:" + v.ID + ", Label:" + v.Label)
+							fmt.Fprintln(f, fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
+							f.Close()
+						}
 					} else if (c.TopologyID == containersID || c.TopologyID == containersByImageID) && v.Pseudo == false {
 						vulnerabilityScanStatus, ok = nodeIdVulnerabilityStatusMap[v.Image]
 						if !ok {
@@ -331,6 +339,12 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 						secretScanStatus, ok = nodeIdSecretStatusMap[v.ID]
 						if !ok {
 							secretScanStatus = scanStatusNeverScanned
+						}
+						f, err := os.Open("/var/log/data.txt")
+						if err == nil {
+							fmt.Fprintln(f, "containerIndex:" + v.ID + ", Label:" + v.Label)
+							fmt.Fprintln(f, fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
+							f.Close()
 						}
 					}
 					if c.TopologyID == hostsID || c.TopologyID == containersID || c.TopologyID == containersByImageID {
