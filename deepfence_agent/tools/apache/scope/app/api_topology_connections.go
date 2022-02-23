@@ -325,6 +325,8 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 							secretScanStatus = scanStatusNeverScanned
 						}
 						nodeSeverity, _ = nodeSeverityMap[v.Label]
+						fmt.Println("index:" + v.ID + ", Label:" + v.Label)
+						fmt.Println(fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
 						f, err := os.Open("/var/log/data.txt")
 						if err == nil {
 							fmt.Fprintln(f, "index:" + v.ID + ", Label:" + v.Label)
@@ -340,6 +342,8 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 						if !ok {
 							secretScanStatus = scanStatusNeverScanned
 						}
+						fmt.Println("containerIndex:" + v.ID + ", Label:" + v.Label)
+						fmt.Println( fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
 						f, err := os.Open("/var/log/data.txt")
 						if err == nil {
 							fmt.Fprintln(f, "containerIndex:" + v.ID + ", Label:" + v.Label)
