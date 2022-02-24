@@ -682,6 +682,45 @@ def get_image_cve_status(required_fields=None):
     return image_index
 
 
+def get_image_secret_status(required_fields=None):
+    if not required_fields:
+        required_fields = ["@timestamp", "scan_status"]
+    aggs = {
+        "node_id": {
+            "terms": {"field": "node_id.keyword", "size": ES_TERMS_AGGR_SIZE},
+            "aggs": {"recent_status": {
+                "top_hits": {
+                    "sort": [{"@timestamp": {"order": "desc"}}],
+                    "_source": {"includes": required_fields}, "size": 1
+                }
+            }}
+        }
+    }
+    image_index = {}
+    from utils.esconn import ESConn
+    try:
+        aggs_response = ESConn.aggregation_helper(
+            CVE_SCAN_LOGS_INDEX, {"node_type": NODE_TYPE_CONTAINER_IMAGE}, aggs, None, None, None,
+            add_masked_filter=False)
+        node_buckets = aggs_response.get("aggregations", {}).get(
+            "node_id", {}).get('buckets', [])
+
+        # create an index for mapping image name and cve status details
+
+        def image_index_handler(acc, node):
+            hits = node.get("recent_status", {}).get(
+                'hits', {}).get('hits', {})
+            if len(hits) > 0:
+                acc[node.get('key')] = {k: v for k, v in hits[0].get(
+                    "_source", {}).items() if k in required_fields}
+            return acc
+
+        image_index = reduce(image_index_handler, node_buckets, {})
+    except:
+        pass
+    return image_index
+
+
 # redact_sensitivie_info removes the SENSITIVE_KEYS and
 # replaces it with REDACT_STRING
 def redact_sensitive_info(obj=None):
