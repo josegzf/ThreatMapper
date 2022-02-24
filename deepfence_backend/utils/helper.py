@@ -710,7 +710,6 @@ def get_image_secret_status(required_fields=None):
         def image_index_handler(acc, node):
             hits = node.get("recent_status", {}).get(
                 'hits', {}).get('hits', {})
-            print("hits:" + repr(hits))
             if len(hits) > 0:
                 acc[node.get('key')] = {k: v for k, v in hits[0].get(
                     "_source", {}).items() if k in required_fields}
