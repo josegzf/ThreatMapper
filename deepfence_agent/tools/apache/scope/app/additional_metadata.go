@@ -310,7 +310,7 @@ func formatComplianceStatus(count int, status string) string {
 func NewStatus() (*Status, error) {
 	vulnerabilityStatusMap = map[string]string{
 		"QUEUED": "queued", "STARTED": "in_progress", "SCAN_IN_PROGRESS": "in_progress", "WARN": "in_progress",
-		"COMPLETED": "complete", "ERROR": "error", "STOPPED": "error", "UPLOADING_IMAGE": "in_progress",
+		"COMPLETED": "complete", "COMPLETE": "complete", "ERROR": "error", "STOPPED": "error", "UPLOADING_IMAGE": "in_progress",
 		"UPLOAD_COMPLETE": "in_progress"}
 
 	esHost := os.Getenv("ELASTICSEARCH_HOST")
