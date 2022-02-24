@@ -134,10 +134,6 @@ func (st *Status) updateScanStatusData() error {
 	if err != nil {
 		return err
 	}
-	b, err := json.Marshal(mSearchResult)
-	if err == nil {
-		fmt.Println("Response: " + string(b))
-	}
 	nodeIdVulnerabilityStatusMap := make(map[string]string)
 	nodeIdVulnerabilityStatusTimeMap := make(map[string]string)
 	cveResp := mSearchResult.Responses[0]
@@ -216,12 +212,16 @@ func (st *Status) updateScanStatusData() error {
 		if !ok {
 			latestStatus = scanStatusNeverScanned
 		}
-		nodeIdSecretStatusMap[nodeIdAggs.Key.(string)] = latestStatus
-		nodeIdSecretStatusTimeMap[nodeIdAggs.Key.(string)] = latestScanTimeStr
+		nodeIdSecretStatusMap[strings.Split(nodeIdAggs.Key.(string), ";")[0]] = latestStatus
+		nodeIdSecretStatusTimeMap[strings.Split(nodeIdAggs.Key.(string), ";")[0]] = latestScanTimeStr
 	}
 	st.nodeStatus.Lock()
 	st.nodeStatus.SecretScanStatus = nodeIdSecretStatusMap
 	st.nodeStatus.SecretScanStatusTime = nodeIdSecretStatusTimeMap
+	b, err := json.Marshal(nodeIdSecretStatusMap)
+	if err == nil {
+		fmt.Println("nodeIdSecretStatusMap: " + string(b))
+	}
 	st.nodeStatus.Unlock()
 
 	nodeIdComplianceStatusMap := make(map[string]string)
