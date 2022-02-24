@@ -59,7 +59,7 @@ def get_scan_status_for_registry_images(registry_image_list, image_cve_status=No
         unique_images.add(reg_image["image_name"])
         cve_status = image_cve_status.get(reg_image["image_name_with_tag"], {})
         secret_status = image_secret_status.get(reg_image["image_name_with_tag"], {})
-        print("secret_status:" + secret_status)
+        print("secret_status:" + repr(secret_status))
         if cve_status:
             reg_image["vulnerability_scan_status"] = status_map.get(
                 cve_status["action"], cve_never_scanned)
