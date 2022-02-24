@@ -134,6 +134,10 @@ func (st *Status) updateScanStatusData() error {
 	if err != nil {
 		return err
 	}
+	b, err := json.Marshal(mSearchResult)
+	if err == nil {
+		fmt.Println("Response: " + string(b))
+	}
 	nodeIdVulnerabilityStatusMap := make(map[string]string)
 	nodeIdVulnerabilityStatusTimeMap := make(map[string]string)
 	cveResp := mSearchResult.Responses[0]

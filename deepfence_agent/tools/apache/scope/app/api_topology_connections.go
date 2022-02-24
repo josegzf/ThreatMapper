@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	ot "github.com/opentracing/opentracing-go"
 	otlog "github.com/opentracing/opentracing-go/log"
 	"github.com/pkg/errors"
@@ -14,7 +13,6 @@ import (
 	"github.com/weaveworks/scope/report"
 	"net/http"
 	"net/url"
-	"os"
 	"reflect"
 	"strings"
 	"sync"
@@ -325,14 +323,8 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 							secretScanStatus = scanStatusNeverScanned
 						}
 						nodeSeverity, _ = nodeSeverityMap[v.Label]
-						fmt.Println("index:" + v.ID + ", Label:" + v.Label)
-						fmt.Println(fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
-						f, err := os.Open("/var/log/data.txt")
-						if err == nil {
-							fmt.Fprintln(f, "index:" + v.ID + ", Label:" + v.Label)
-							fmt.Fprintln(f, fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
-							f.Close()
-						}
+						//fmt.Println("index:" + v.ID + ", Label:" + v.Label)
+						//fmt.Println(fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
 					} else if (c.TopologyID == containersID || c.TopologyID == containersByImageID) && v.Pseudo == false {
 						vulnerabilityScanStatus, ok = nodeIdVulnerabilityStatusMap[v.Image]
 						if !ok {
@@ -342,14 +334,8 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 						if !ok {
 							secretScanStatus = scanStatusNeverScanned
 						}
-						fmt.Println("containerIndex:" + v.ID + ", Label:" + v.Label)
-						fmt.Println( fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
-						f, err := os.Open("/var/log/data.txt")
-						if err == nil {
-							fmt.Fprintln(f, "containerIndex:" + v.ID + ", Label:" + v.Label)
-							fmt.Fprintln(f, fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
-							f.Close()
-						}
+						//fmt.Println("containerIndex:" + v.ID + ", Label:" + v.Label)
+						//fmt.Println( fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
 					}
 					if c.TopologyID == hostsID || c.TopologyID == containersID || c.TopologyID == containersByImageID {
 						complianceScanStatus, ok = nodeIdComplianceStatusMap[v.ID]
