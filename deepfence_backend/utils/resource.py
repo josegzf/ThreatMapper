@@ -76,7 +76,7 @@ def get_scan_status_for_registry_images(registry_image_list, image_cve_status=No
         if secret_status:
             reg_image["secret_scan_status"] = status_map.get(
                 secret_status["scan_status"], cve_never_scanned)
-            reg_image["secret_scan_status_time"] = cve_status["@timestamp"]
+            reg_image["secret_scan_status_time"] = secret_status["@timestamp"]
             if secret_status["scan_status"] == SECRET_SCAN_STATUS_COMPLETED:
                 total_scanned += 1
             elif secret_status["scan_status"] in "IN_PROGRESS":
