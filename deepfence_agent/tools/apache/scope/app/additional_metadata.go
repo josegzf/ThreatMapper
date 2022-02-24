@@ -218,10 +218,6 @@ func (st *Status) updateScanStatusData() error {
 	st.nodeStatus.Lock()
 	st.nodeStatus.SecretScanStatus = nodeIdSecretStatusMap
 	st.nodeStatus.SecretScanStatusTime = nodeIdSecretStatusTimeMap
-	b, err := json.Marshal(nodeIdSecretStatusMap)
-	if err == nil {
-		fmt.Println("nodeIdSecretStatusMap: " + string(b))
-	}
 	st.nodeStatus.Unlock()
 
 	nodeIdComplianceStatusMap := make(map[string]string)
@@ -311,7 +307,7 @@ func NewStatus() (*Status, error) {
 	vulnerabilityStatusMap = map[string]string{
 		"QUEUED": "queued", "STARTED": "in_progress", "SCAN_IN_PROGRESS": "in_progress", "WARN": "in_progress",
 		"COMPLETED": "complete", "COMPLETE": "complete", "ERROR": "error", "STOPPED": "error", "UPLOADING_IMAGE": "in_progress",
-		"UPLOAD_COMPLETE": "in_progress"}
+		"UPLOAD_COMPLETE": "in_progress", "IN_PROGRESS": "in_progress"}
 
 	esHost := os.Getenv("ELASTICSEARCH_HOST")
 	if esHost == "" {

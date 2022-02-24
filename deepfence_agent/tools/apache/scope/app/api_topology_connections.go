@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	ot "github.com/opentracing/opentracing-go"
 	otlog "github.com/opentracing/opentracing-go/log"
 	"github.com/pkg/errors"
@@ -324,12 +323,6 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 							secretScanStatus = scanStatusNeverScanned
 						}
 						nodeSeverity, _ = nodeSeverityMap[v.Label]
-						fmt.Println("host index:" + v.ID + ", Label:" + v.Label)
-						b, err := json.Marshal(nodeIdSecretStatusMap)
-						if err == nil {
-							fmt.Println("nodeIdSecretStatusMap At Reading: " + string(b))
-						}
-						//fmt.Println(fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
 					} else if (c.TopologyID == containersID || c.TopologyID == containersByImageID) && v.Pseudo == false {
 						vulnerabilityScanStatus, ok = nodeIdVulnerabilityStatusMap[v.Image]
 						if !ok {
@@ -339,8 +332,6 @@ func (wc *connectionWebsocketState) update(ctx context.Context) error {
 						if !ok {
 							secretScanStatus = scanStatusNeverScanned
 						}
-						fmt.Println("containerIndex:" + v.ID + ", Label:" + v.Label)
-						//fmt.Println( fmt.Sprintf("nodeIdSecretStatusMap: %v", nodeIdSecretStatusMap))
 					}
 					if c.TopologyID == hostsID || c.TopologyID == containersID || c.TopologyID == containersByImageID {
 						complianceScanStatus, ok = nodeIdComplianceStatusMap[v.ID]
