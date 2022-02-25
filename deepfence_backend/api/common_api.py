@@ -891,6 +891,7 @@ def delete_resources():
     if dead_nodes_since_days < 0:
         dead_nodes_since_days = 0
     dead_nodes_since_dt = datetime.now() - timedelta(days=dead_nodes_since_days)
+    message = ""
 
     if not number:
         raise InvalidUsage("number is required")
@@ -1008,6 +1009,7 @@ def delete_resources():
             filters["scan_id"] = scan_id
             ESConn.bulk_delete(SECRET_SCAN_INDEX, filters)
             ESConn.bulk_delete(SECRET_SCAN_LOGS_INDEX, filters)
+            message = "Successfully deleted scan id"
     else:
         raise InvalidUsage("doc_type is invalid")
 
