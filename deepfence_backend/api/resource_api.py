@@ -988,7 +988,7 @@ def enumerate_node_filters():
                     resource_filters.append({"label": "Image Name", "name": "image_name_with_tag", "options": images,
                            "type": "string"})
                 if len(hosts) > 0:
-                    resource_filters.append({"label": "Host Name", "name": "host_name", "options": images,
+                    resource_filters.append({"label": "Host Name", "name": "host_name", "options": hosts,
                            "type": "string"})
 
     if filters_needed:
