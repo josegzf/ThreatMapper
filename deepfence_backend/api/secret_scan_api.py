@@ -647,10 +647,14 @@ def secret_report():
     for bucket in secrets_by_severity:
         by_severity = {"name": bucket.get('key'), "children": []}
         total_count = 0
+        buckets_inserted = 0
         for inner_bucket in bucket.get("rule_name", {}).get('buckets', []):
             total_count += inner_bucket.get("doc_count")
             child = {"name": inner_bucket.get("key"), "value": inner_bucket.get("doc_count")}
             by_severity["children"].append(child)
+            buckets_inserted += 1
+            if buckets_inserted >= 6:
+                break
         by_severity["value"] = total_count
         inner_children.append(by_severity)
     data["children"] = inner_children
