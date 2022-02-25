@@ -879,7 +879,7 @@ def enumerate_node_filters():
         resource_types = resource_types_str.split(",")
     resource_filters = []
     for resource_type in resource_types:
-        if resource_type not in [constants.CVE_INDEX]:
+        if resource_type not in [constants.CVE_INDEX, constants.SECRET_SCAN_INDEX]:
             print('Invalid resource_type {}. Skipping'.format(resource_type))
             continue
         if resource_type == constants.CVE_INDEX:
@@ -953,6 +953,48 @@ def enumerate_node_filters():
                 resource_filters.append(details)
             node_types = [constants.NODE_TYPE_HOST]
             filters_needed = "kubernetes_cluster_name"
+        elif resource_type == constants.SECRET_SCAN_INDEX:
+            scan_aggs = {
+                "node_type": {
+                    "terms": {"field": "node_type.keyword", "size": 10},
+                    "aggs": {"node_id": {"terms": {"field": "node_id.keyword", "size": ES_TERMS_AGGR_SIZE}}}
+                }
+            }
+            secret_scan_aggs = ESConn.aggregation_helper(
+                constants.SECRET_SCAN_LOGS_INDEX, {"scan_status": ["COMPLETE", "ERROR"]}, scan_aggs, number,
+                constants.TIME_UNIT_MAPPING.get(time_unit), lucene_query_string, add_masked_filter=False)
+            buckets = scan_aggs.get("aggregations", {}).get("buckets", [])
+            containers = []
+            images = []
+            hosts = []
+            kubernetes_clusters = []
+            for bucket in buckets:
+                node_type = bucket.get("key", "")
+                node_id_buckets = bucket.get("node_id", {}).get("buckets", [])
+                for node_id_bucket in node_id_bucket:
+                    node = Node.get_node("", node_id_bucket.get("key", ""), node_type)
+                    if node:
+                        if node_type == constants.NODE_TYPE_CONTAINER_IMAGE:
+                            images.append(node.name)
+                        if node_type == constants.NODE_TYPE_CONTAINER:
+                            containers.append(node.name)
+                        if node_type == constants.NODE_TYPE_HOST:
+                            hosts.append(node.name)
+                        if node.kubernetes_cluster_name:
+                            kubernetes_clusters.append(node.kubernetes_cluster_name)
+                if len(containers) > 0:
+                    resource_filters.append({"label": "Container Name", "name": "container_name", "options": containers,
+                           "type": "string"})
+                if len(images) > 0:
+                    resource_filters.append({"label": "Image Name", "name": "image_name_with_tag", "options": images,
+                           "type": "string"})
+                if len(hosts) > 0:
+                    resource_filters.append({"label": "Host Name", "name": "host_name", "options": images,
+                           "type": "string"})
+                if len(hosts) > 0:
+                    resource_filters.append({"label": "Kubernetes Cluster Name", "name": "cluster_name", "options": kubernetes_clusters,
+                                             "type": "string"})
+
     if filters_needed:
         filters_needed = str(filters_needed).split(",")
     if not node_types:
