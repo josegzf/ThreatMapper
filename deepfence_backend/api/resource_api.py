@@ -963,7 +963,7 @@ def enumerate_node_filters():
             secret_scan_aggs = ESConn.aggregation_helper(
                 constants.SECRET_SCAN_LOGS_INDEX, {"scan_status": ["COMPLETE", "ERROR"]}, scan_aggs, number,
                 constants.TIME_UNIT_MAPPING.get(time_unit), lucene_query_string, add_masked_filter=False)
-            buckets = scan_aggs.get("aggregations", {}).get("buckets", [])
+            buckets = secret_scan_aggs.get("aggregations", {}).get("buckets", [])
             containers = []
             images = []
             hosts = []
