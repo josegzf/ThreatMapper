@@ -968,6 +968,8 @@ def enumerate_node_filters():
             images = []
             hosts = []
             kubernetes_clusters = []
+            node_types = [constants.NODE_TYPE_HOST]
+            filters_needed = "kubernetes_cluster_name"
             for bucket in buckets:
                 node_type = bucket.get("key", "")
                 node_id_buckets = bucket.get("node_id", {}).get("buckets", [])
