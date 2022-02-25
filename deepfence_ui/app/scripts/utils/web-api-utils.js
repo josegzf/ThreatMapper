@@ -1721,6 +1721,19 @@ export function startCVEScan(params = {}) {
   }).then(errorHandler);
 }
 
+export function stopCVEScan(params = {}) {
+  const { nodeId, nodeType } = params;
+  const url = `${backendElasticApiEndPoint()}/node/0/cve_scan_stop?scope_id=${nodeId}&node_type=${nodeType}`;
+  return fetch(url, {
+    credentials: 'same-origin',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: getAuthHeader(),
+    },
+  }).then(errorHandler);
+}
+
 export function startSecretScan(params = {}) {
   const { nodeId, nodeType } = params;
   const url = `${backendElasticApiEndPoint()}/node/0/secret_scan_start?scope_id=${nodeId}&node_type=${nodeType}`;
@@ -2242,8 +2255,11 @@ export function getSecretScanData(params = {}) {
     filters,
     start_index,
     size,
+    lucene_query: luceneQuery = []
   } = params;
-  let url = `${backendElasticApiEndPoint()}/secret/node_report`;
+  const luceneQueryEscaped = encodeURIComponent(getLuceneQuery(luceneQuery));
+
+  let url = `${backendElasticApiEndPoint()}/secret/node_report?lucene_query=${luceneQueryEscaped}`;
   const body = {
     filters,
     start_index,
@@ -2277,8 +2293,10 @@ export function getSecretScanResults(params = {}) {
     filters,
     start_index,
     size,
+    lucene_query: luceneQuery = [],
   } = params;
-  let url = `${backendElasticApiEndPoint()}/secret/scan_results`;
+  const luceneQueryEscaped = encodeURIComponent(getLuceneQuery(luceneQuery));
+  let url = `${backendElasticApiEndPoint()}/secret/scan_results?lucene_query=${luceneQueryEscaped}`;
   const body = {
     filters,
     start_index,
