@@ -963,27 +963,24 @@ def enumerate_node_filters():
             secret_scan_aggs = ESConn.aggregation_helper(
                 constants.SECRET_SCAN_LOGS_INDEX, {"scan_status": ["COMPLETE", "ERROR"]}, scan_aggs, number,
                 constants.TIME_UNIT_MAPPING.get(time_unit), lucene_query_string, add_masked_filter=False)
-            buckets = secret_scan_aggs.get("aggregations", {}).get("buckets", [])
+            buckets = secret_scan_aggs.get("aggregations", {}).get("node_type", {}).get("buckets", [])
             containers = []
             images = []
             hosts = []
-            kubernetes_clusters = []
             node_types = [constants.NODE_TYPE_HOST]
             filters_needed = "kubernetes_cluster_name"
             for bucket in buckets:
                 node_type = bucket.get("key", "")
                 node_id_buckets = bucket.get("node_id", {}).get("buckets", [])
-                for node_id_bucket in node_id_bucket:
-                    node = Node.get_node("", node_id_bucket.get("key", ""), node_type)
-                    if node:
+                for node_id_bucket in node_id_buckets:
+                    node_id = node_id_bucket.get("key", "")
+                    if node_id:
                         if node_type == constants.NODE_TYPE_CONTAINER_IMAGE:
-                            images.append(node.name)
+                            images.append(node_id)
                         if node_type == constants.NODE_TYPE_CONTAINER:
-                            containers.append(node.name)
+                            containers.append(node_id)
                         if node_type == constants.NODE_TYPE_HOST:
-                            hosts.append(node.name)
-                        if node.kubernetes_cluster_name:
-                            kubernetes_clusters.append(node.kubernetes_cluster_name)
+                            hosts.append(node_id)
                 if len(containers) > 0:
                     resource_filters.append({"label": "Container Name", "name": "container_name", "options": containers,
                            "type": "string"})
@@ -993,9 +990,6 @@ def enumerate_node_filters():
                 if len(hosts) > 0:
                     resource_filters.append({"label": "Host Name", "name": "host_name", "options": images,
                            "type": "string"})
-                if len(hosts) > 0:
-                    resource_filters.append({"label": "Kubernetes Cluster Name", "name": "cluster_name", "options": kubernetes_clusters,
-                                             "type": "string"})
 
     if filters_needed:
         filters_needed = str(filters_needed).split(",")
