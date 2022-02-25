@@ -54,11 +54,12 @@ def secret_scanned_nodes():
     if request.is_json:
         if type(request.json) != dict:
             raise InvalidUsage("Request data invalid")
-        filters = request.json.get("filters", {})
-        filters["node_id"] = []
-        filters["node_id"].extend(filters.get("image_name_with_tag", []))
-        filters["node_id"].extend(filters.get("host_name", []))
-        filters["node_id"].extend(filters.get("container_name", []))
+        req_filters = request.json.get("filters", {})
+        node_ids = []
+        node_ids.extend(req_filters.get("image_name_with_tag", []))
+        node_ids.extend(req_filters.get("host_name", []))
+        node_ids.extend(req_filters.get("container_name", []))
+        filters["node_id"] = node_ids
         node_filters = request.json.get("node_filters", {})
         page_size = request.json.get("size", page_size)
         start_index = request.json.get("start_index", start_index)
